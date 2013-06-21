@@ -14,17 +14,20 @@ var dasboard = {
       this.clients.forEach(function (c) {
         c.on('close', function ( ) {
           console.log("Disconnected client with id:", c.id);
-          this.clients.splice(clients.indexOf(c));
+          this.clients.splice(this.clients.indexOf(c));
         }.bind(this));
       }.bind(this));
       
     }.bind(this));
   },
 
-  send: function ( label, data ) {
+  send: function ( ) {
+    if(arguments.length<0) {
+      console.warn('Can\'t send empty message!');
+      return;
+    }
+    var json_obj = JSON.stringify(arguments);
     this.clients.forEach(function (c) {
-      console.log("Sending", data, "(", label, ") to", c.id);
-      var json_obj = JSON.stringify({ label: label, id:c.id, data: data });
       c.send(json_obj);
     });
   }

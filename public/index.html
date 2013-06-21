@@ -16,8 +16,8 @@
       console.log("Disconnected!");
       socket.open();
     };
-    socket.onmessage = function(data){
-      console.log("New data!", data);
+    socket.onmessage = function(message){
+      console.log("New data!", JSON.parse(message.data));
     };
     </script>
   </body>
