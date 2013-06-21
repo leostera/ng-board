@@ -1,0 +1,24 @@
+{
+  "name": "dasboard",
+  "version": "0.0.1",
+  "description": "Realtime dashboard.",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com/leostera/dasboard.git"
+  },
+  "keywords": [
+    "dashboard",
+    "engine.io",
+    "websockets"
+  ],
+  "author": "Leandro Ostera <sayhi@leostera.com>",
+  "license": "MIT",
+  "dependencies": {
+    "engine.io": "~0.6.2",
+    "underscore": "~1.4.4"
+  }
+}
