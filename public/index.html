@@ -1,18 +1,29 @@
 <!doctype html>
-<html ng-app="Dash">
+<html>
   <head>
     <title>Dasboard</title>
+    <style>
+    dash-counter {
+      margin: 20px;
+      display: block;
+    }
+    dash-smoothie {
+      display: block;
+      margin: 20px;
+    }
+    </style>
   </head>
-  <body>
+  <body ng-app="Dash">
+    <script src="/jquery.js"></script>
     <script src="/engine.io-dev.js"></script>
+    <script src="/smoothie.js"></script>
     <script src="/bson.js"></script>
     <script src="/angular.js"></script>
     <script src="/app.js"></script>
-    <section ng-controller="WidgetTest">
-      <span>Should we show the text? {{johnny.show}}</span>
-      <br>
-      <span ng-show="johnny.show">{{johnny.text}}</span>
-      <pre>{{another|json}}</pre>
-    </section>
+    <dash-counter listen-to="messageCount">
+      We have sent #{{count}} messages!
+    </dash-counter>
+    <dash-smoothie listen-to="volume">
+    </dash-smoothie>
   </body>
 </html>

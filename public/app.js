@@ -1,10 +1,71 @@
 window.app = angular.module('Dash',
   [
     'Dash.services'
+  , 'Dash.widgets'
   ]);
 
 window.services = angular.module('Dash.services',
   []);
+
+window.directives = angular.module('Dash.widgets',
+  []);
+
+directives.directive('dashCounter',
+  ['$io'
+  , function ($io){
+    var dirObj = {
+      // Can be both an attribute and an element
+      // I'd rather it'd be an element thou
+      restrict: 'EA',
+      
+      link: function postLink(scope, iElement, iAttrs) {
+        $io.$on(iAttrs.listenTo, function (data) {
+          scope.count = data;
+        });
+      }
+    };
+    return dirObj;
+  }]);
+
+directives.directive('dashSmoothie',
+  ['$io', '$timeout'
+  , function ($io, $timeout){
+    var dirObj = {
+      // Can be both an attribute and an element
+      // I'd rather it'd be an element thou
+      restrict: 'EA',
+
+      scope: {
+        eventName: '@listenTo'
+      },
+
+      replace: false,
+      template: '<canvas id="{{eventName}}_chart" height="200"></canvas>',
+      
+      link: {
+        pre: function (scope, iElement, iAttrs) {
+        },
+        post: function (scope, iElement, iAttrs) {
+          scope.smoothie = new SmoothieChart();
+          scope.time = new TimeSeries();
+          
+          $timeout(function () {
+            scope.smoothie.streamTo($('#'+scope.eventName+'_chart')[0], 1000);
+            scope.smoothie.addTimeSeries(scope.time, {
+              strokeStyle: 'rgb(255, 0, 0)',
+              fillStyle: 'rgba(255, 0, 0, 0.4)',
+              lineWidth: 2
+            });
+          },100);
+          
+          $io.$on(iAttrs.listenTo, function (data) {
+            scope.time.append(new Date().getTime(),data);
+          });
+        }
+      }
+    };
+    return dirObj;
+  }]);
 
 
 services.service('$io', [
@@ -25,13 +86,10 @@ services.service('$io', [
       });
 
       socket.on('message', function (message) {
-        console.log("RAW:",message);
         if(message[0] != '{') {
           message = BSON.deserialize(message);
-          console.log("BSON:",message);
         }
         message = JSON.parse(message);  
-        console.log("JSON:",message);
 
         if(listeners.hasOwnProperty(message.label)) {
           $rootScope.$apply(function () {
@@ -54,17 +112,4 @@ services.service('$io', [
     };
 
     return service;
-  }]);
-
-
-app.controller('WidgetTest',
-  ['$scope', '$io'
-  , function ($scope, $io) {
-    $io.$on('Johnny Label', function (data) {
-      $scope.johnny = data;
-    });
-
-    $io.$on('Other Label', function (data) {
-      $scope.another = data;
-    });
   }]);

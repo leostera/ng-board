@@ -26,7 +26,7 @@ var dasboard = {
 
   send: function ( label, object, useBSON ) {
     if(this.clients.length<1) {
-      console.warn('Can\'t send message to nobody');
+      // console.warn('Can\'t send message to nobody');
       return;
     }
 
@@ -64,15 +64,20 @@ var express = require('express')
   , app = express(app)
   , server = require('http').createServer(app);
 
+var c = 0;
+
 dasboard.use(server);
 
 setInterval(function () {
-  dasboard.send("Johnny Label", {show: Math.random()%2>0.5 ? true : false, text: "This is some text, straight from the backend."} );
-}, 500);
+  dasboard.send("volume", 7+(Math.sin(c)*3) );
+  c+=1;
+}, 100);
 
 setInterval(function () {
-  dasboard.send("Other Label", {date: new Date(), magicNumber: true});
-}, 500);
+  dasboard.send("messageCount", c);
+  c+=1;
+}, 50);
+
 
 app.use(express.static('public'));
 app.get('/', function(req, res, next){
