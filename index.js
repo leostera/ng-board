@@ -69,14 +69,22 @@ var c = 0;
 dasboard.use(server);
 
 setInterval(function () {
-  dasboard.send("volume", 7+(Math.sin(c)*3) );
+  dasboard.send("volume", Math.random()*10 );
   c+=1;
-}, 100);
+}, 1000);
+
+setInterval(function () {
+  if(Math.random()>0.75) {
+    dasboard.send("tone", 10 );
+  } else {
+    dasboard.send("tone", 1);
+  }
+  c+=1;
+}, 500);
 
 setInterval(function () {
   dasboard.send("messageCount", c);
-  c+=1;
-}, 50);
+}, 500);
 
 
 app.use(express.static('public'));

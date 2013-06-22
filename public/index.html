@@ -23,7 +23,23 @@
     <dash-counter listen-to="messageCount">
       We have sent #{{count}} messages!
     </dash-counter>
-    <dash-smoothie listen-to="volume">
+    <dash-smoothie
+        listen-to="volume"
+        height="400px"
+        width="800px"
+        stroke-style="#ff0000"
+        fill-style="rgba(255, 0, 0, 0.4)">
+    </dash-smoothie>
+
+    <dash-smoothie
+        listen-to="tone"
+        height="200px"
+        width="800px"
+        speed="47"
+        interpolation="linear"
+        line-width="2"
+        fill-style="rgba(0, 200, 0, 0.2)"
+        >
     </dash-smoothie>
   </body>
 </html>

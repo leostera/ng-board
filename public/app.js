@@ -36,25 +36,32 @@ directives.directive('dashSmoothie',
       restrict: 'EA',
 
       scope: {
-        eventName: '@listenTo'
+        eventName: '@listenTo',
+        height: '@height',
+        width: '@width'
       },
 
       replace: false,
-      template: '<canvas id="{{eventName}}_chart" height="200"></canvas>',
+      template: '<canvas id="{{eventName}}_chart" height="{{height}}" width="{{width}}"></canvas>',
       
       link: {
         pre: function (scope, iElement, iAttrs) {
         },
         post: function (scope, iElement, iAttrs) {
-          scope.smoothie = new SmoothieChart();
+          scope.smoothie = new SmoothieChart({
+            millisPerPixel: iAttrs.speed || 20,
+            interpolation: iAttrs.interpolation || 'bezier'
+          });
           scope.time = new TimeSeries();
+
+          console.log(iAttrs);
           
           $timeout(function () {
             scope.smoothie.streamTo($('#'+scope.eventName+'_chart')[0], 1000);
             scope.smoothie.addTimeSeries(scope.time, {
-              strokeStyle: 'rgb(255, 0, 0)',
-              fillStyle: 'rgba(255, 0, 0, 0.4)',
-              lineWidth: 2
+              strokeStyle: iAttrs.strokeStyle || '#00ff00',
+              fillStyle: iAttrs.fillStyle,
+              lineWidth: iAttrs.lineWidth || 2
             });
           },100);
           
