@@ -10,6 +10,7 @@ window.services = angular.module('Dash.services',
 services.service('$io', [
   '$rootScope'
   , function ($rootScope) {
+    var BSON = bson().BSON;
     var socket = new eio.Socket(); 
     var listeners = {};
 
@@ -24,7 +25,14 @@ services.service('$io', [
       });
 
       socket.on('message', function (message) {
-        message = JSON.parse(message);
+        console.log("RAW:",message);
+        if(message[0] != '{') {
+          message = BSON.deserialize(message);
+          console.log("BSON:",message);
+        }
+        message = JSON.parse(message);  
+        console.log("JSON:",message);
+
         if(listeners.hasOwnProperty(message.label)) {
           $rootScope.$apply(function () {
             listeners[message.label].forEach(
@@ -43,7 +51,6 @@ services.service('$io', [
         listeners[eventName] = [];
       }
       listeners[eventName].push(callback);
-      console.log(listeners[eventName]);
     };
 
     return service;

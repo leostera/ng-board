@@ -5,12 +5,14 @@
   </head>
   <body>
     <script src="/engine.io-dev.js"></script>
+    <script src="/bson.js"></script>
     <script src="/angular.js"></script>
     <script src="/app.js"></script>
     <section ng-controller="WidgetTest">
-      <span>Johnny Label Time: {{johnny}}</span>
+      <span>Should we show the text? {{johnny.show}}</span>
       <br>
-      <span>Another Label: {{another|json}}</span>
+      <span ng-show="johnny.show">{{johnny.text}}</span>
+      <pre>{{another|json}}</pre>
     </section>
   </body>
 </html>
