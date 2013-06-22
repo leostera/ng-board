@@ -21,14 +21,19 @@ var dasboard = {
     }.bind(this));
   },
 
-  send: function ( ) {
-    if(arguments.length<0) {
-      console.warn('Can\'t send empty message!');
+  send: function ( label, object ) {
+    if(this.clients.length<1) {
+      console.warn('Can\'t send message to nobody');
       return;
     }
-    var json_obj = JSON.stringify(arguments);
+
+    console.log(label, object);
+
     this.clients.forEach(function (c) {
-      c.send(json_obj);
+      c.send(JSON.stringify({
+          label: label
+        , data: object
+      }));
     });
   }
 };
@@ -42,6 +47,10 @@ dasboard.use(server);
 setInterval(function () {
   dasboard.send("Johnny Label", new Date() );
 }, 500);
+
+setInterval(function () {
+  dasboard.send("Other Label", {date: new Date(), magicNumber: true} );
+}, 600);
 
 app.use(express.static('public'));
 app.get('/', function(req, res, next){
