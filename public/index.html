@@ -7,6 +7,10 @@
     <script src="/engine.io-dev.js"></script>
     <script src="/angular.js"></script>
     <script src="/app.js"></script>
-    <section ng-controller="WidgetTest"></section>
+    <section ng-controller="WidgetTest">
+      <span>Johnny Label Time: {{johnny}}</span>
+      <br>
+      <span>Another Label: {{another|json}}</span>
+    </section>
   </body>
 </html>

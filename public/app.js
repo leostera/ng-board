@@ -54,10 +54,10 @@ app.controller('WidgetTest',
   ['$scope', '$io'
   , function ($scope, $io) {
     $io.$on('Johnny Label', function (data) {
-      console.log("Johnny Label got something!", data);
+      $scope.johnny = data;
     });
 
     $io.$on('Other Label', function (data) {
-      console.log("Other Label got something!", data);
+      $scope.another = data;
     });
   }]);
