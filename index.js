@@ -74,6 +74,11 @@ setInterval(function () {
 }, 1000);
 
 setInterval(function () {
+  dasboard.send("message", "This is message #" + c );
+  c+=1;
+}, 2000);
+
+setInterval(function () {
   if(Math.random()>0.75) {
     dasboard.send("tone", 10 );
   } else {
