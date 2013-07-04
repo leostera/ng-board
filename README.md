@@ -5,7 +5,7 @@ This is a really simple project that aims to push forward the AngularJS communit
 
 Creating widgets for it is really simple and using the built-in $io service it's dead easy to talk with any websockets server.
 
-We use [dispatcher.io](https://github.com/leostera/dispatcher.io) with it's [ng-board transport](https://github.com/leostera/dispatcher.io-ng-board) but you can use whatever you want in the background.
+We use [transporter.io](https://github.com/leostera/transporter.io) with it's [ng-board transport](https://github.com/leostera/transporter.io-ng-board) but you can use whatever you want in the background.
 
 ### Widgets
 

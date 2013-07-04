@@ -19,9 +19,9 @@ server.on('connection', function (socket) {
   }, 3000);
 });
 
-// Dispatcher
-var dio = require('dispatcher.io')
-  , ngBoard = require('dispatcher.io-ng-board');
+// transporter
+var dio = require('transporter.io')
+  , ngBoard = require('transporter.io-ng-board');
 
 // This is the port the dashboard will connect to
 ngBoard.serveFiles({
