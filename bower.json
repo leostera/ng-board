@@ -1,7 +1,10 @@
 {
   "name": "ng-board",
-  "version": "0.0.1",
-  "main": ["index.js", "engine.io.js"],
+  "version": "0.0.2",
+  "main": [
+    "index.js",
+    "engine.io.js"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
@@ -10,5 +13,6 @@
   "dependencies": {
     "angular": "*",
     "jquery": "*"
-  }
+  },
+  "readmeFilename": "README.md",
 }
