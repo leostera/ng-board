@@ -1,0 +1,14 @@
+{
+  "name": "ng-board",
+  "version": "0.0.0",
+  "main": ["index.js", "engine.io.js"],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ],
+  "dependencies": {
+    "angular": "*",
+    "jquery": "*"
+  }
+}

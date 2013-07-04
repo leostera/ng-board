@@ -1,102 +1,152 @@
-var io = require('engine.io')
-  , _  = require('underscore')
-  , async = require('async')
-  , bson  = require('bson').pure().BSON;
+window.dashboard = {};
 
-// module.exports
-var dasboard = {
-  useBSON: false,
-  clients: [],
+angular.module('-',
+  [
+    '-.services'
+  , '-.widgets'
+  ]);
 
-  use: function ( server ) {
-    io = io.attach(server);
-    io.on('connection', function ( socket ) {
-      console.log("Connected client with id:", socket.id);
-      this.clients.push(socket);
+window.dashboard.services = angular.module('-.services', []);
 
-      this.clients.forEach(function (c) {
-        c.on('close', function ( ) {
-          console.log("Disconnected client with id:", c.id);
-          this.clients.splice(this.clients.indexOf(c));
-        }.bind(this));
-      }.bind(this));
-      
-    }.bind(this));
-  },
+window.dashboard.widgets = angular.module('-.widgets',  []);
 
-  send: function ( label, object, useBSON ) {
-    if(this.clients.length<1) {
-      // console.warn('Can\'t send message to nobody');
-      return;
+dashboard.widgets.directive('dashList',
+  ['$io', '$timeout'
+  , function ($io, $timeout){
+    var dirObj = {
+      restrict: 'EA',
+      scope: {
+        eventName: '@listenTo',
+        limit: '@limit'
+      },
+
+      replace: false,
+      template: '<ul id="list"><li ng-repeat="item in items">{{item}}</li></ul>',
+
+      link: {
+        pre: function (scope, iElement, iAttrs) {},
+        post: function (scope, iElement, iAttrs) {
+          var items = [];
+          $io.$on(iAttrs.listenTo, function (data) {
+            items.unshift(data);
+            items.splice(scope.limit, 1);
+            scope.items = items;
+          });
+        }
+      }
+    };
+    return dirObj;
+  }]);
+
+dashboard.services.service('$io', [
+  '$rootScope'
+  , function ($rootScope) {
+
+    // I don't like this
+    // I feel it should be encapsulated
+    // in it's own service
+    var bson = bson || false;
+    if(!bson) {
+      console.warn("ng-board: No BSON Support!");
     }
+    var BSON = !!bson ? bson().BSON : null;
 
-    if(this.arguments < 3) {
-      var useBSON = false;
-    }
 
-    async.forEach(this.clients, function (c, cb) {
-      var obj; 
+    var listeners = {};
+    var socket; 
+    var options;
 
-      if(this.useBSON || useBSON) {
-        obj = bson.serialize({
-              label: label
-            , data: object
-          }, false, true, false);
-      } else {
-        obj = JSON.stringify({
-            label: label
-          , data: object
+    // Binding function
+    var bind = function (opts) {
+      socket.on('open', function () {
+        options = opts;
+
+        $rootScope.$broadcast('io:open');
+
+        console.log("ng-board: Connected to", opts.url);
+
+        if(opts.open) {
+          $rootScope.$apply(opts.open());
+        }
+
+        socket.on('close', function () {
+          $rootScope.$broadcast('io:close');
+
+          console.log("ng-board: Disconnected from", opts.url);
+
+          if(opts.close) {
+            $rootScope.$apply(opts.close());
+          }
         });
+
+        socket.on('message', function (message) {
+          if(opts.preMessage) {
+            $rootScope.$apply(opts.preMessage());
+          }
+
+          if(message[0] != '{' && BSON) {
+            message = BSON.deserialize(message);
+          }
+
+          message = JSON.parse(message);  
+          console.info('ng-board:', message);
+
+          console.log("ng-board: widget", message.label);
+          console.log("ng-board: data", message.data);
+          if(listeners.hasOwnProperty(message.label)) {
+            $rootScope.$apply(function () {
+              listeners[message.label].forEach(
+                function (cb) {
+                  cb(message.data); 
+              });
+            });
+          }
+
+          if(opts.postMessage) {
+            $rootScope.$apply(opts.postMessage());
+          }
+        });
+      });
+    }
+
+    var service = {};
+
+    service.$connect = function (url, opts) {
+      if(!opts && typeof(url) === 'object') {
+        opts = url;
+        url = opts.url;
+      } else {
+        opts.url = url;
+      }
+      console.log(opts);
+
+      if(socket && !opts.reconnect) {
+        console.warn('ng-board: Already connected to', options.url);
+        console.warn('ng-board: Pass in a \'replace\' flag in your options to reconnect.');
+        return;
       }
 
-      console.log(obj);
-      c.send(obj);
-      cb(null);
-    }, function (errors) {
-      if(errors) {
-        console.error(errors);
+      if(socket && opts.reconnect) {
+        service.disconnect();
+        socket = null;
       }
-    });
-  }
-};
 
-var express = require('express')
-  , app = express(app)
-  , server = require('http').createServer(app);
+      socket = new eio.Socket(opts.url);
 
-var c = 0;
+      // Yuk
+      bind(opts);
+    };
 
-dasboard.use(server);
+    service.$disconnect = function () {
+      socket.close();
+    };
 
-setInterval(function () {
-  dasboard.send("volume", Math.random()*10 );
-  c+=1;
-}, 1000);
+    service.$on = function (eventName, callback) {
+      if(!listeners[eventName]) {
+        listeners[eventName] = [];
+      }
+      listeners[eventName].push(callback);
+    };
 
-setInterval(function () {
-  dasboard.send("message", "This is message #" + c );
-  c+=1;
-}, 2000);
-
-setInterval(function () {
-  if(Math.random()>0.75) {
-    dasboard.send("tone", 10 );
-  } else {
-    dasboard.send("tone", 1);
-  }
-  c+=1;
-}, 500);
-
-setInterval(function () {
-  dasboard.send("messageCount", c);
-}, 500);
-
-
-app.use(express.static('public'));
-app.get('/', function(req, res, next){
-  res.sendfile('public/index.html');
-});
-
-server.listen(process.env.PORT || 3000, function(){
-  console.log('\033[96mlistening on localhost:3000 \033[39m');
-});
+    return service;
+  }]);

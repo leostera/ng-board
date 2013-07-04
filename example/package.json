@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "dispatcher.io": "0.0.x",
+    "dispatcher.io-ng-board": "0.0.x",
+    "engine.io": "~0.6.3"
+  }
+}
