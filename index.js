@@ -10,34 +10,6 @@ window.dashboard.services = angular.module('-.services', []);
 
 window.dashboard.widgets = angular.module('-.widgets',  []);
 
-dashboard.widgets.directive('dashList',
-  ['$io', '$timeout'
-  , function ($io, $timeout){
-    var dirObj = {
-      restrict: 'EA',
-      scope: {
-        eventName: '@listenTo',
-        limit: '@limit'
-      },
-
-      replace: false,
-      template: '<ul id="list"><li ng-repeat="item in items">{{item}}</li></ul>',
-
-      link: {
-        pre: function (scope, iElement, iAttrs) {},
-        post: function (scope, iElement, iAttrs) {
-          var items = [];
-          $io.$on(iAttrs.listenTo, function (data) {
-            items.unshift(data);
-            items.splice(scope.limit, 1);
-            scope.items = items;
-          });
-        }
-      }
-    };
-    return dirObj;
-  }]);
-
 dashboard.services.service('$io', [
   '$rootScope'
   , function ($rootScope) {
@@ -91,8 +63,6 @@ dashboard.services.service('$io', [
           message = JSON.parse(message);  
           console.info('ng-board:', message);
 
-          console.log("ng-board: widget", message.label);
-          console.log("ng-board: data", message.data);
           if(listeners.hasOwnProperty(message.label)) {
             $rootScope.$apply(function () {
               listeners[message.label].forEach(
