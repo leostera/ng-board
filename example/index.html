@@ -10,16 +10,18 @@
     </style>
   </head>
   <body ng-app="YourApp">
-    <dash-linker
+    <w-linker
         listen-to="messageCounter"
         link-to="counter">
       We have sent #{{counter}} messages!
-    </dash-linker>
+    </w-linker>
+
     <script src="./components/jquery/jquery.min.js"></script>
     <script src="./components/angular/angular.min.js"></script>
     <script src="./components/ng-board/engine.io.js"></script>
     <script src="./components/ng-board/index.js"></script>
     <script src="./components/ng-board-linker/widget.js"></script>
+    
     <script>
     var yourApp = angular.module('YourApp',
         ['-']);
