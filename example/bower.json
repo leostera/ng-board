@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "ng-board": "*",
+    "ng-board": "../",
     "ng-board-linker": "*"
   }
 }

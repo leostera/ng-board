@@ -24,7 +24,10 @@ var dio = require('dispatcher.io')
   , ngBoard = require('dispatcher.io-ng-board');
 
 // This is the port the dashboard will connect to
-ngBoard.listen(3000);
+ngBoard.serveFiles({
+  port: 3000,
+  dir: __dirname
+});
 
 dio.transports.push(ngBoard);
 
