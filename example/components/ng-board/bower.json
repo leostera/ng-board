@@ -1,7 +1,10 @@
 {
   "name": "ng-board",
-  "version": "0.0.0",
-  "main": "index.js",
+  "version": "0.0.1",
+  "main": [
+    "index.js",
+    "engine.io.js"
+  ],
   "ignore": [
     "**/.*",
     "node_modules",
@@ -11,12 +14,11 @@
     "angular": "*",
     "jquery": "*"
   },
+  "gitHead": "6c8d39d99f11b175cb0e0f8dec7579a3ec5a915f",
   "readme": "ERROR: No README.md file found!",
   "readmeFilename": "README.md",
-  "gitHead": "0e3e41a6ac419cb7bc3d1ebe5aa651bd0cf0acca",
-  "_id": "ng-board@0.0.0",
+  "_id": "ng-board@0.0.1",
   "description": "ERROR: No README.md file found!",
-  "commit": "0e3e41a6ac419cb7bc3d1ebe5aa651bd0cf0acca",
   "repository": {
     "type": "local-repo",
     "path": "../"
